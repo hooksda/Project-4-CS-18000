@@ -17,6 +17,7 @@ public class ChatFilter {
             }
         } catch (IOException e) {
             e.printStackTrace();
+
         }
 
     }
