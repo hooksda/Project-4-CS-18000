@@ -13,6 +13,7 @@ public class ChatFilter {
                 String[] bad = line.split(" ");
                 for (int i = 0; i < bad.length; i++) {
                     badwords.add(bad[i]);
+
                 }
             }
         } catch (IOException e) {
