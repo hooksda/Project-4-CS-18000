@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 
 final class ChatClient {
     private ObjectInputStream sInput;
@@ -78,13 +79,28 @@ final class ChatClient {
      */
     public static void main(String[] args) {
         // Get proper arguments and override defaults
-
+        Scanner s = new Scanner(System.in);
+        String server = s.nextLine();
+        int portnumber = s.nextInt();
+        String username = s.nextLine();
+        if (server.equals("")) {
+            server = "localhost";
+        }
+        if (portnumber == 0) {
+            portnumber = 1500;
+        }
+        if (username.equals("")) {
+            username = "Anonymous";
+        }
         // Create your client and start it
-        ChatClient client = new ChatClient("localhost", 1500, "CS 180 Student");
+        ChatClient client = new ChatClient(server, portnumber, username);
         client.start();
+        String message = s.nextLine();
+        if (message.equals("/logout")) {
 
+        }
         // Send an empty message to the server
-        client.sendMessage(new ChatMessage());
+        client.sendMessage(new ChatMessage(message, 0));
     }
 
 
@@ -95,11 +111,13 @@ final class ChatClient {
      */
     private final class ListenFromServer implements Runnable {
         public void run() {
-            try {
-                String msg = (String) sInput.readObject();
-                System.out.print(msg);
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+            while (true) {
+                try {
+                    String msg = (String) sInput.readObject();
+                    System.out.print(msg);
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
