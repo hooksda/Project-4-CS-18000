@@ -100,14 +100,18 @@ final class ChatClient {
             ChatClient client = new ChatClient(server, portnumber, username);
             client.start();
             System.out.println("Enter message to be sent");
-            String message = s.nextLine();
-            if (message.equals("/logout")) {
-                sInput.close();
-                sOutput.close();
-                socket.close();
+            while (true) {
+                String message = s.nextLine();
+                if (message.equals("/logout")) {
+                    client.sendMessage(new ChatMessage(username + " has logged out.", 1));
+                    sInput.close();
+                    sOutput.close();
+                    socket.close();
+                    break;
+                }
+                // Send an empty message to the server
+                client.sendMessage(new ChatMessage(message, 0));
             }
-            // Send an empty message to the server
-            client.sendMessage(new ChatMessage(message, 0));
         } catch (IOException e) {
 
         }
