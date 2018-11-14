@@ -9,11 +9,11 @@ final class ChatMessage implements Serializable {
         this.message = message;
         this.type = type;
     }
-    private void broadcast(String message) {
+    private synchronized void broadcast(String message) {
 
     }
     private boolean writeMessage(String msg) {
-
+        return true;
     }
     private void remove(int id) {
 
@@ -23,6 +23,14 @@ final class ChatMessage implements Serializable {
     }
     private void close() {
 
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public int getType() {
+        return type;
     }
 
     // Here is where you should implement the chat message object.

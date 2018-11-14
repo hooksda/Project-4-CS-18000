@@ -80,8 +80,11 @@ final class ChatClient {
     public static void main(String[] args) {
         // Get proper arguments and override defaults
         Scanner s = new Scanner(System.in);
+        System.out.println("Enter server name");
         String server = s.nextLine();
+        System.out.println("Enter port number");
         int portnumber = s.nextInt();
+        System.out.println("Enter username");
         String username = s.nextLine();
         if (server.equals("")) {
             server = "localhost";
@@ -95,6 +98,7 @@ final class ChatClient {
         // Create your client and start it
         ChatClient client = new ChatClient(server, portnumber, username);
         client.start();
+        System.out.println("Enter message to be sent");
         String message = s.nextLine();
         if (message.equals("/logout")) {
 
