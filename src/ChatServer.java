@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 final class ChatServer {
     private static int uniqueId = 0;
@@ -43,7 +44,15 @@ final class ChatServer {
      *  If the port number is not specified 1500 is used
      */
     public static void main(String[] args) {
-        ChatServer server = new ChatServer(1500);
+        Scanner s = new Scanner(System.in);
+        System.out.println("Enter port number");
+        String portnumb = s.nextLine();
+        if (portnumb.equals("")) {
+            portnumb = "1500";
+        }
+        int porty = Integer.parseInt(portnumb);
+        ChatServer server = new ChatServer(porty);
+        System.out.println(portnumb);
         server.start();
     }
 
