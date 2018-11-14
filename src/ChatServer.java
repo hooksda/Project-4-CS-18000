@@ -24,14 +24,14 @@ final class ChatServer {
      */
     private void start() {
         try {
-            while (true) {
                 ServerSocket serverSocket = new ServerSocket(port);
-                Socket socket = serverSocket.accept();
-                Runnable r = new ClientThread(socket, uniqueId++);
-                Thread t = new Thread(r);
-                clients.add((ClientThread) r);
-                t.start();
-            }
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    Runnable r = new ClientThread(socket, uniqueId++);
+                    Thread t = new Thread(r);
+                    clients.add((ClientThread) r);
+                    t.start();
+                }
         } catch (IOException e) {
             e.printStackTrace();
         }
