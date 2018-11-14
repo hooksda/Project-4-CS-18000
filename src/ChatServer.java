@@ -1,6 +1,4 @@
-package src;
 
-import src.ChatMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

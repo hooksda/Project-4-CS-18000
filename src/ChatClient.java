@@ -5,9 +5,9 @@ import java.net.Socket;
 import java.util.Scanner;
 
 final class ChatClient {
-    private ObjectInputStream sInput;
-    private ObjectOutputStream sOutput;
-    private Socket socket;
+    private static ObjectInputStream sInput;
+    private static ObjectOutputStream sOutput;
+    private static Socket socket;
 
     private final String server;
     private final String username;
@@ -78,33 +78,39 @@ final class ChatClient {
      * If the username is not specified "Anonymous" should be used
      */
     public static void main(String[] args) {
-        // Get proper arguments and override defaults
-        Scanner s = new Scanner(System.in);
-        System.out.println("Enter username");
-        String username = s.nextLine();
-        System.out.println("Enter port number");
-        int portnumber = s.nextInt();
-        System.out.println("Enter server name");
-        String server = s.nextLine();
-        if (server.equals("")) {
-            server = "localhost";
-        }
-        if (portnumber == 0) {
-            portnumber = 1500;
-        }
-        if (username.equals("")) {
-            username = "Anonymous";
-        }
-        // Create your client and start it
-        ChatClient client = new ChatClient(server, portnumber, username);
-        client.start();
-        System.out.println("Enter message to be sent");
-        String message = s.nextLine();
-        if (message.equals("/logout")) {
+        try {
+            // Get proper arguments and override defaults
+            Scanner s = new Scanner(System.in);
+            System.out.println("Enter username");
+            String username = s.nextLine();
+            System.out.println("Enter port number");
+            int portnumber = s.nextInt();
+            System.out.println("Enter server name");
+            String server = s.nextLine();
+            if (server.equals("")) {
+                server = "localhost";
+            }
+            if (portnumber == 0) {
+                portnumber = 1500;
+            }
+            if (username.equals("")) {
+                username = "Anonymous";
+            }
+            // Create your client and start it
+            ChatClient client = new ChatClient(server, portnumber, username);
+            client.start();
+            System.out.println("Enter message to be sent");
+            String message = s.nextLine();
+            if (message.equals("/logout")) {
+                sInput.close();
+                sOutput.close();
+                socket.close();
+            }
+            // Send an empty message to the server
+            client.sendMessage(new ChatMessage(message, 0));
+        } catch (IOException e) {
 
         }
-        // Send an empty message to the server
-        client.sendMessage(new ChatMessage(message, 0));
     }
 
 
