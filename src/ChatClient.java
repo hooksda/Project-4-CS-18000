@@ -1,3 +1,5 @@
+package src;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -80,12 +82,12 @@ final class ChatClient {
     public static void main(String[] args) {
         // Get proper arguments and override defaults
         Scanner s = new Scanner(System.in);
-        System.out.println("Enter server name");
-        String server = s.nextLine();
-        System.out.println("Enter port number");
-        int portnumber = s.nextInt();
         System.out.println("Enter username");
         String username = s.nextLine();
+        System.out.println("Enter port number");
+        int portnumber = s.nextInt();
+        System.out.println("Enter server name");
+        String server = s.nextLine();
         if (server.equals("")) {
             server = "localhost";
         }
