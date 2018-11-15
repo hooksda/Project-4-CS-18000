@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Scanner;
 
 final class ChatClient {
@@ -60,6 +61,7 @@ final class ChatClient {
     private void sendMessage(ChatMessage msg) {
         try {
             sOutput.writeObject(msg);
+            sOutput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,13 +129,13 @@ final class ChatClient {
      */
     private final class ListenFromServer implements Runnable {
         public void run() {
-            while (true) {
-                try {
+            try {
+                while (true) {
                     String msg = (String) sInput.readObject();
                     System.out.print(msg);
-                } catch (IOException | ClassNotFoundException e) {
-                    e.printStackTrace();
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
