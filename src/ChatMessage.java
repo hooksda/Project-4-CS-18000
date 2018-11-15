@@ -1,3 +1,6 @@
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.io.Serializable;
 
 final class ChatMessage implements Serializable {
@@ -11,8 +14,9 @@ final class ChatMessage implements Serializable {
     private synchronized void broadcast(String message) {
 
     }
-    private boolean writeMessage(String msg) {
-        return true;
+    private boolean writeMessage(String msg) throws IOException {
+return true;
+
     }
     private void remove(int id) {
 

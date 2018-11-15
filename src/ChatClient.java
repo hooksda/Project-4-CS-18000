@@ -86,6 +86,7 @@ final class ChatClient {
             System.out.println("Enter port number");
             int portnumber = s.nextInt();
             System.out.println("Enter server name");
+            s.nextLine();
             String server = s.nextLine();
             if (server.equals("")) {
                 server = "localhost";
@@ -104,6 +105,7 @@ final class ChatClient {
                 String message = s.nextLine();
                 if (message.equals("/logout")) {
                     client.sendMessage(new ChatMessage(username + " has logged out.", 1));
+                    sOutput.flush();
                     sInput.close();
                     sOutput.close();
                     socket.close();
