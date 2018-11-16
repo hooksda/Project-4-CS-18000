@@ -1,13 +1,14 @@
 
 
+import sun.java2d.pipe.SpanShapeRenderer;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 final class ChatServer {
     private static int uniqueId = 0;
@@ -114,15 +115,20 @@ final class ChatServer {
             }
         }
         private synchronized void broadcast(String message) {
-            System.out.println(message);
+            String fullMessage = "";
             for (int i = 0; i < clients.size(); i++) {
                 try {
-                    //TODO: add the date and time of the message sent
-                    clients.get(i).writeMessage(message);
+                    Date date = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+                    sdf.setTimeZone(TimeZone.getTimeZone("America/Indiana/Indianapolis"));
+                    String time = sdf.format(date);
+                    fullMessage = time + " " + message;
+                    clients.get(i).writeMessage(fullMessage);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+            System.out.println(fullMessage);
         }
         private boolean writeMessage(String msg) throws IOException {
             if (socket.isConnected()) {
