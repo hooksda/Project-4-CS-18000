@@ -1,7 +1,4 @@
 
-
-import sun.java2d.pipe.SpanShapeRenderer;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,14 +23,14 @@ final class ChatServer {
      */
     private void start() {
         try {
-                ServerSocket serverSocket = new ServerSocket(port);
-                while (true) {
-                    Socket socket = serverSocket.accept();
-                    Runnable r = new ClientThread(socket, uniqueId++);
-                    Thread t = new Thread(r);
-                    clients.add((ClientThread) r);
-                    t.start();
-                }
+            ServerSocket serverSocket = new ServerSocket(port);
+            while (true) {
+                Socket socket = serverSocket.accept();
+                Runnable r = new ClientThread(socket, uniqueId++);
+                Thread t = new Thread(r);
+                clients.add((ClientThread) r);
+                t.start();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,22 +84,27 @@ final class ChatServer {
          */
         @Override
         public void run() {
-            System.out.println("never reached run method");
             while (true) {
                 // Read the username sent to you by client
                 try {
                     cm = (ChatMessage) sInput.readObject();
-                    System.out.println("reached here befor if");
                     if (cm.getType() == 1) {
-                        System.out.println("reached here");
                         sOutput.writeObject(cm.getMessage());
                         break;
-                    } else
+                    } else if (cm.getMessage().contains("/msg")) {
+                        String[] to = cm.getMessage().split(" ");
+                        for (int i = 0; i < clients.size(); i++) {
+                            if (clients.get(i).username.equals(to[2])) {
+                                System.out.println(cm.getMessage());
+                                clients.get(i).writeMessage(cm.getMessage());
+                            }
+                        }
+                    } else {
                         broadcast(username + ": " + cm.getMessage() + "\n");
+                    }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-
 
 
                 // Send message back to the client
@@ -114,6 +116,7 @@ final class ChatServer {
                 }
             }
         }
+
         private synchronized void broadcast(String message) {
             String fullMessage = "";
             for (int i = 0; i < clients.size(); i++) {
@@ -130,6 +133,7 @@ final class ChatServer {
             }
             System.out.println(fullMessage);
         }
+
         private boolean writeMessage(String msg) throws IOException {
             if (socket.isConnected()) {
                 sOutput.writeObject(msg);
@@ -139,9 +143,11 @@ final class ChatServer {
                 return false;
             }
         }
+
         private synchronized void remove(int id) {
             clients.remove(id);
         }
+
         private void close() {
             try {
                 sInput.close();
