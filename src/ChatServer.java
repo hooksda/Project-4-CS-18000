@@ -86,11 +86,14 @@ final class ChatServer {
          */
         @Override
         public void run() {
+            System.out.println("never reached run method");
             while (true) {
                 // Read the username sent to you by client
                 try {
                     cm = (ChatMessage) sInput.readObject();
+                    System.out.println("reached here befor if");
                     if (cm.getType() == 1) {
+                        System.out.println("reached here");
                         sOutput.writeObject(cm.getMessage());
                         break;
                     } else
