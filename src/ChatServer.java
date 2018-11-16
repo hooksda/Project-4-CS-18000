@@ -92,7 +92,7 @@ final class ChatServer {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            System.out.println(username +": " + cm.getMessage());
+            broadcast(username +": " + cm.getMessage());
 
 
             // Send message back to the client
@@ -104,13 +104,19 @@ final class ChatServer {
             }
         }
         private synchronized void broadcast(String message) {
+            System.out.println(message);
             for (int i = 0; i < clients.size(); i++) {
-
+                try {
+                    //TODO: add the date and time of the message sent
+                    clients.get(i).writeMessage(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         private boolean writeMessage(String msg) throws IOException {
             if (socket.isConnected()) {
-                sOutput.writeChars(msg);
+                sOutput.writeObject(msg);
                 sOutput.flush();
                 return true;
             } else {
@@ -118,9 +124,16 @@ final class ChatServer {
             }
         }
         private synchronized void remove(int id) {
-
+            clients.remove(id);
         }
         private void close() {
+            try {
+                sInput.close();
+                sOutput.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
     }

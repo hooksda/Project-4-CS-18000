@@ -61,7 +61,6 @@ final class ChatClient {
     private void sendMessage(ChatMessage msg) {
         try {
             sOutput.writeObject(msg);
-            sOutput.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,21 +85,21 @@ final class ChatClient {
             System.out.println("Enter username");
             String username = s.nextLine();
             System.out.println("Enter port number");
-            int portnumber = s.nextInt();
+            String portnumber = s.nextLine();
             System.out.println("Enter server name");
             s.nextLine();
             String server = s.nextLine();
             if (server.equals("")) {
                 server = "localhost";
             }
-            if (portnumber == 0) {
-                portnumber = 1500;
+            if (portnumber.equals("")) {
+                portnumber = "1500";
             }
             if (username.equals("")) {
                 username = "Anonymous";
             }
             // Create your client and start it
-            ChatClient client = new ChatClient(server, portnumber, username);
+            ChatClient client = new ChatClient(server, Integer.parseInt(portnumber), username);
             client.start();
             System.out.println("Enter message to be sent");
             while (true) {
