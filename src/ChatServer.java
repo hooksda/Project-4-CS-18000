@@ -86,21 +86,28 @@ final class ChatServer {
          */
         @Override
         public void run() {
-            // Read the username sent to you by client
-            try {
-                cm = (ChatMessage) sInput.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            broadcast(username +": " + cm.getMessage());
+            while (true) {
+                // Read the username sent to you by client
+                try {
+                    cm = (ChatMessage) sInput.readObject();
+                    if (cm.getType() == 1) {
+                        sOutput.writeObject(cm.getMessage());
+                        break;
+                    } else
+                        broadcast(username + ": " + cm.getMessage() + "\n");
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
 
 
-            // Send message back to the client
-            try {
 
-                sOutput.writeObject(cm.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
+                // Send message back to the client
+                try {
+
+                    sOutput.writeObject(cm.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         private synchronized void broadcast(String message) {
