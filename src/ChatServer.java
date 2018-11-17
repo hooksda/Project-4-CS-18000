@@ -91,6 +91,7 @@ final class ChatServer {
                 if (clients.size() < 2) {
                     System.out.println("Server waiting for Clients on port 1500.");
                 }
+
                 // Read the username sent to you by client
                 try {
                     cm = (ChatMessage) sInput.readObject();
