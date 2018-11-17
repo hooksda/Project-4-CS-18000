@@ -9,8 +9,13 @@ public class ChatFilter {
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
             ArrayList<String> badwords = new ArrayList<>();
+            String word = "";
+            String asterisk = "*";
             for (String line; (line = br.readLine()) != null; ) {
                 String[] bad = line.split(" ");
+                for (int i = 0; i < bad.length; i++) {
+                    word = word + asterisk;
+                }
                 for (int i = 0; i < bad.length; i++) {
                     badwords.add(bad[i]);
                 }
