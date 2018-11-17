@@ -87,7 +87,6 @@ final class ChatClient {
             System.out.println("Enter port number");
             String portnumber = s.nextLine();
             System.out.println("Enter server name");
-            s.nextLine();
             String server = s.nextLine();
             if (server.equals("")) {
                 server = "localhost";
