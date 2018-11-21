@@ -113,9 +113,9 @@ final class ChatClient {
                 }
                 if (message.contains("/msg")) {
                     String[] mess = message.split(" ");
-                    String recep = mess[2];
+                    String recep = mess[1];
                     String messagetobesent = "";
-                    for (int i = 3; i < mess.length; i++) {
+                    for (int i = 2; i < mess.length; i++) {
                         if (i < mess.length - 1) {
                             messagetobesent += mess[i] + " ";
                         } else if (i == mess.length - 1) {

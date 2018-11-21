@@ -94,8 +94,10 @@ final class ChatServer {
                     if (cm.getType() == 1) {
                         sOutput.writeObject(cm.getMessage());
                         break;
-                    } else {
+                    } else if (cm.getType() == 0){
                         broadcast(username + ": " + cm.getMessage() + "\n");
+                    } else if (cm.getType() == 3) {
+                        directMessage(cm.getMessage(), cm.getRecipient());
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -108,10 +110,10 @@ final class ChatServer {
         private void directMessage(String message, String username) {
             String[] to = cm.getMessage().split(" ");
             for (int i = 0; i < clients.size(); i++) {
-                if (clients.get(i).username.equals(cm.getRecipient())) {
+                if (clients.get(i).username.equals(username)) {
                     System.out.println(cm.getMessage());
                     try {
-                        clients.get(i).writeMessage(cm.getMessage());
+                        clients.get(i).writeMessage(message);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
