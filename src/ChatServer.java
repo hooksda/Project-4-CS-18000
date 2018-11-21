@@ -95,6 +95,9 @@ final class ChatServer {
                         sOutput.writeObject(cm.getMessage());
                         break;
                     } else if (cm.getType() == 0){
+                        if (cm.getMessage().equals("/list")) {
+                            sOutput.writeObject(listUsers());
+                        } else
                         broadcast(username + ": " + cm.getMessage() + "\n");
                     } else if (cm.getType() == 3) {
                         directMessage(cm.getMessage(), cm.getRecipient());
@@ -113,12 +116,24 @@ final class ChatServer {
                 if (clients.get(i).username.equals(username)) {
                     System.out.println(cm.getMessage());
                     try {
-                        clients.get(i).writeMessage(message);
+                        clients.get(i).writeMessage(username + ": " + message);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
+        }
+        private String listUsers() {
+            String listOfUsers = "";
+            for (int i = 0; i < clients.size(); i++) {
+
+                if (i < clients.size() - 1) {
+                    listOfUsers += clients.get(i).username + "\n";
+                } else {
+                    listOfUsers += clients.get(i).username;
+                }
+            }
+            return listOfUsers;
         }
 
         private synchronized void broadcast(String message) {
