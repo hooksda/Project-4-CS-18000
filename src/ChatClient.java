@@ -104,15 +104,29 @@ final class ChatClient {
             while (true) {
                 String message = s.nextLine();
                 if (message.equals("/logout")) {
-                    client.sendMessage(new ChatMessage(username + " has logged out.", 1));
+                    client.sendMessage(new ChatMessage(username + " has logged out.", 1, null));
                     sOutput.flush();
                     sInput.close();
                     sOutput.close();
                     socket.close();
                     break;
                 }
-                // Send an empty message to the server
-                client.sendMessage(new ChatMessage(message, 0));
+                if (message.contains("/msg")) {
+                    String[] mess = message.split(" ");
+                    String recep = mess[2];
+                    String messagetobesent = "";
+                    for (int i = 3; i < mess.length; i++) {
+                        if (i < mess.length - 1) {
+                            messagetobesent += mess[i] + " ";
+                        } else if (i == mess.length - 1) {
+                            messagetobesent += mess[i];
+                        }
+                    }
+                    client.sendMessage(new ChatMessage(messagetobesent, 3, recep));
+                } else {
+                    // Send an empty message to the server
+                    client.sendMessage(new ChatMessage(message, 0, null));
+                }
             }
         } catch (IOException e) {
 

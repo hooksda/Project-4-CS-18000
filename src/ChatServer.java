@@ -1,7 +1,4 @@
 
-
-import sun.java2d.pipe.SpanShapeRenderer;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -94,20 +91,30 @@ final class ChatServer {
                 // Read the username sent to you by client
                 try {
                     cm = (ChatMessage) sInput.readObject();
-                        if (cm.getType() == 1) {
-                            sOutput.writeObject(cm.getMessage());
-                            break;
-                        } else
-                            broadcast(username + ": " + cm.getMessage() + "\n");
+                    if (cm.getType() == 1) {
+                        sOutput.writeObject(cm.getMessage());
+                        break;
+                    } else {
+                        broadcast(username + ": " + cm.getMessage() + "\n");
+                    }
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 
                 // Send message back to the client
-                try {
-                    sOutput.writeObject(cm.getMessage());
-                } catch (IOException e) {
-                    e.printStackTrace();
+            }
+        }
+
+        private void directMessage(String message, String username) {
+            String[] to = cm.getMessage().split(" ");
+            for (int i = 0; i < clients.size(); i++) {
+                if (clients.get(i).username.equals(cm.getRecipient())) {
+                    System.out.println(cm.getMessage());
+                    try {
+                        clients.get(i).writeMessage(cm.getMessage());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
