@@ -122,7 +122,8 @@ final class ChatServer {
                 if (clients.get(i).username.equals(username)) {
                     System.out.println(cm.getMessage());
                     try {
-                        clients.get(i).writeMessage(username + ": " + message);
+                        clients.get(i).writeMessage(this.username + " -> " + username +
+                                ": " + message);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
