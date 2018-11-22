@@ -1,7 +1,4 @@
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,21 +8,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 final class ChatServer {
-
     private static int uniqueId = 0;
     private final List<ClientThread> clients = new ArrayList<>();
     private final int port;
-    String path = "";
+    Date date = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    String chatTime = sdf.format(System.currentTimeMillis()) + " ";
+    String chatTime = sdf.format(TimeZone.getTimeZone("America/Indiana/Indianapolis"));
 
     private ChatServer(int port) {
         this.port = port;
-    }
-
-    private ChatServer(int port, String path) {
-        this.port = port;
-        this.path = path;
     }
 
     /*
@@ -33,8 +24,8 @@ final class ChatServer {
      * Right now it just creates the socketServer and adds a new ClientThread to a list to be handled
      */
     private void start() {
+        System.out.println(chatTime + "Server waiting for Clients on port " + port + ".");
         try {
-            System.out.println(chatTime + " Server waiting for Clients on port " + port + ".");
             ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -53,38 +44,19 @@ final class ChatServer {
      *  > java ChatServer portNumber
      *  If the port number is not specified 1500 is used
      */
-    public void chatPath(String str) {
-        path = str;
-
-    }
-
     public static void main(String[] args) {
-        try {
-            Scanner s = new Scanner(System.in);
-            String readLine = s.nextLine();
-            String[] arry = readLine.split(" ");
-            ChatServer server;
-            if (arry.length == 2) {
-                int porty = Integer.parseInt(arry[0]);
-                server = new ChatServer(porty, arry[1]);
-            } else if (arry.length == 1) {
-                server = new ChatServer(Integer.parseInt(arry[0]));
-            } else {
-                server = new ChatServer(1500);
-            }
-            System.out.println("Banned words file: " + arry[1] + "\n");
-            server.chatPath(arry[1]);
-            System.out.println("Banned words: ");
-            ChatFilter cf = new ChatFilter(arry[1]);
-            for (int i = 0; i < cf.badWords.size(); i++) {
-                System.out.println(cf.badWords.get(i));
-            }
-            System.out.println();
-
-            server.start();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        Scanner s = new Scanner(System.in);
+        System.out.println("Enter port number");
+        String portnumb = s.nextLine();
+        if (portnumb.equals("")) {
+            portnumb = "1500";
         }
+        int porty = Integer.parseInt(portnumb);
+        ChatServer server = new ChatServer(porty);
+        System.out.println(portnumb);
+        System.out.println("Banned Words:");
+
+        server.start();
     }
 
 
@@ -108,7 +80,7 @@ final class ChatServer {
                 sInput = new ObjectInputStream(socket.getInputStream());
                 username = (String) sInput.readObject();
                 System.out.println(chatTime + username + " just connected.");
-                System.out.println(chatTime + " Server waiting for Clients on port " + port + ".");
+                System.out.println(chatTime + "Server waiting for Clients on port " + port + ".");
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -128,7 +100,10 @@ final class ChatServer {
                     if (cm.getType() == 1) {
                         sOutput.writeObject(cm.getMessage());
                         break;
-                    } else if (cm.getType() == 0) {
+                    } else if (cm.getType() == 0){
+                        if (cm.getMessage().equals("/list")) {
+                            sOutput.writeObject(listUsers());
+                        } else
                         broadcast(username + ": " + cm.getMessage() + "\n");
                     } else if (cm.getType() == 3) {
                         directMessage(cm.getMessage(), cm.getRecipient());
@@ -142,30 +117,44 @@ final class ChatServer {
         }
 
         private void directMessage(String message, String username) {
+            String[] to = cm.getMessage().split(" ");
             for (int i = 0; i < clients.size(); i++) {
                 if (clients.get(i).username.equals(username)) {
                     System.out.println(cm.getMessage());
                     try {
-                        clients.get(i).writeMessage(message);
+                        clients.get(i).writeMessage(this.username + " -> " + username +
+                                ": " + message);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
+        private String listUsers() {
+            String listOfUsers = "";
+            for (int i = 0; i < clients.size(); i++) {
+
+                if (i < clients.size() - 1) {
+                    listOfUsers += clients.get(i).username + "\n";
+                } else {
+                    listOfUsers += clients.get(i).username;
+                }
+            }
+            return listOfUsers;
+        }
 
         private synchronized void broadcast(String message) {
-            try {
-                String fullMessage = "";
-                ChatFilter cf = new ChatFilter(path);
-                for (int i = 0; i < clients.size(); i++) {
-                    fullMessage = chatTime + " " + cf.filter(message);
+            String fullMessage = "";
+            ChatFilter cf = new ChatFilter(message);
+            for (int i = 0; i < clients.size(); i++) {
+                try {
+                    fullMessage = chatTime + " " + message;
                     clients.get(i).writeMessage(fullMessage);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            System.out.println(fullMessage);
         }
 
         private boolean writeMessage(String msg) throws IOException {
