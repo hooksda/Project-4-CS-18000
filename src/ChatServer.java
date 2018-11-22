@@ -1,7 +1,3 @@
-
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -143,16 +139,29 @@ final class ChatServer {
         }
 
         private void directMessage(String message, String username) {
+            String[] to = cm.getMessage().split(" ");
             for (int i = 0; i < clients.size(); i++) {
                 if (clients.get(i).username.equals(username)) {
                     System.out.println(cm.getMessage());
                     try {
-                        clients.get(i).writeMessage(message);
+                        clients.get(i).writeMessage(this.username + " -> " + username + ": " + message);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
+        }
+        private String listUsers() {
+            String listOfUsers = "";
+            for (int i = 0; i < clients.size(); i++) {
+
+                if (i < clients.size() - 1) {
+                    listOfUsers += clients.get(i).username + "\n";
+                } else {
+                    listOfUsers += clients.get(i).username;
+                }
+            }
+            return listOfUsers;
         }
 
         private synchronized void broadcast(String message) {
