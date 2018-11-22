@@ -12,6 +12,7 @@ import java.util.*;
 
 final class ChatServer {
 
+
     private static int uniqueId = 0;
     private final List<ClientThread> clients = new ArrayList<>();
     private final int port;
