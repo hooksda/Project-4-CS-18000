@@ -110,8 +110,7 @@ final class ChatClient {
                     sOutput.close();
                     socket.close();
                     break;
-                }
-                if (message.contains("/msg")) {
+                } else if (message.contains("/msg")) {
                     String[] mess = message.split(" ");
                     String recep = mess[1];
                     String messagetobesent = "";
