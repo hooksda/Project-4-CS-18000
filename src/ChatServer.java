@@ -77,7 +77,6 @@ final class ChatServer {
                 System.out.println(cf.badWords.get(i));
             }
             System.out.println();
-
             server.start();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -173,6 +172,7 @@ final class ChatServer {
                     String chatTime = sdf.format(System.currentTimeMillis()) + " ";
                     fullMessage = chatTime + " " + cf.filter(message);
                     clients.get(i).writeMessage(fullMessage);
+                    System.out.println(fullMessage);
                 }
                 
             } catch (IOException e) {
