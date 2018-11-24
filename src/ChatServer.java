@@ -172,8 +172,8 @@ final class ChatServer {
                     String chatTime = sdf.format(System.currentTimeMillis()) + " ";
                     fullMessage = chatTime + " " + cf.filter(message);
                     clients.get(i).writeMessage(fullMessage);
-                    System.out.println(fullMessage);
                 }
+                System.out.println(fullMessage);
                 
             } catch (IOException e) {
                 e.printStackTrace();
