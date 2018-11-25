@@ -140,26 +140,25 @@ final class ChatServer {
 
         private void directMessage(String message, String username) {
             String[] to = cm.getMessage().split(" ");
+            ChatFilter cf = new ChatFilter(path);
             for (int i = 0; i < clients.size(); i++) {
                 if (clients.get(i).username.equals(username)) {
-                    System.out.println(cm.getMessage());
+                    System.out.println(this.username + " -> " + username + ": " + cf.filter(message));
                     try {
-                        clients.get(i).writeMessage(this.username + " -> " + username + ": " + message);
+                        cf = new ChatFilter(path);
+                        clients.get(i).writeMessage(this.username + " -> " + username + ": " + cf.filter(message));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
         }
+
         private String listUsers() {
             String listOfUsers = "";
             for (int i = 0; i < clients.size(); i++) {
 
-                if (i < clients.size() - 1) {
-                    listOfUsers += clients.get(i).username + "\n";
-                } else {
-                    listOfUsers += clients.get(i).username;
-                }
+                listOfUsers += clients.get(i).username + "\n";
             }
             return listOfUsers;
         }
@@ -172,9 +171,11 @@ final class ChatServer {
                     String chatTime = sdf.format(System.currentTimeMillis()) + " ";
                     fullMessage = chatTime + " " + cf.filter(message);
                     clients.get(i).writeMessage(fullMessage);
+
                 }
+
                 System.out.println(fullMessage);
-                
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
