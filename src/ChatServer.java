@@ -163,8 +163,9 @@ final class ChatServer {
         private String listUsers() {
             String listOfUsers = "";
             for (int i = 0; i < clients.size(); i++) {
-
-                listOfUsers += clients.get(i).username + "\n";
+                if (!username.equals(clients.get(i).username)) {
+                    listOfUsers += clients.get(i).username + "\n";
+                }
             }
             return listOfUsers;
         }
