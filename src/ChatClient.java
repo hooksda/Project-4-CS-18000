@@ -81,25 +81,30 @@ final class ChatClient {
         try {
             // Get proper arguments and override defaults
             Scanner s = new Scanner(System.in);
-            System.out.println("Enter username");
-            String username = s.nextLine();
-            System.out.println("Enter port number");
-            String portnumber = s.nextLine();
-            System.out.println("Enter server name");
-            String server = s.nextLine();
-            if (server.equals("")) {
-                server = "localhost";
-            }
-            if (portnumber.equals("")) {
+            String username = "Anonymous";
+            String server = "localhost";
+            String portnumber = "1500";
+            String inputing = s.nextLine();
+            String[] input = inputing.split(" ");
+            if (input.length == 1) {
+                if (!input[0].equals("")) {
+                    username = input[0];
+                }
                 portnumber = "1500";
-            }
-            if (username.equals("")) {
-                username = "Anonymous";
+                server = "localhost";
+            } else if (input.length == 2) {
+                username = input[0];
+                portnumber = input[1];
+                server = "localhost";
+            } else if (input.length == 3) {
+                username = input[0];
+                portnumber = input[1];
+                server = input[2];
             }
             // Create your client and start it
+            System.out.println(username + " " + portnumber + " " + server);
             ChatClient client = new ChatClient(server, Integer.parseInt(portnumber), username);
             client.start();
-            System.out.println("Enter message to be sent");
             while (true) {
                 String message = s.nextLine();
                 if (message.equals("/logout")) {
