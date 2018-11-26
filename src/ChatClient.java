@@ -121,6 +121,8 @@ final class ChatClient {
                         }
                     }
                     client.sendMessage(new ChatMessage(messagetobesent, 3, recep));
+                } else if (message.equals("/list")) {
+                    client.sendMessage(new ChatMessage(message, 2, null));
                 } else {
                     // Send an empty message to the server
                     client.sendMessage(new ChatMessage(message, 0, null));
