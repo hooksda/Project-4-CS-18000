@@ -107,7 +107,7 @@ final class ChatClient {
             client.start();
             while (true) {
                 String message = s.nextLine();
-                if (message.equals("/logout")) {
+                if (message.equalsIgnoreCase("/logout")) {
                     client.sendMessage(new ChatMessage(username + " has logged out.", 1, null));
                     sOutput.flush();
                     sInput.close();
@@ -126,7 +126,7 @@ final class ChatClient {
                         }
                     }
                     client.sendMessage(new ChatMessage(messagetobesent, 3, recep));
-                } else if (message.equals("/list")) {
+                } else if (message.equalsIgnoreCase("/list")) {
                     client.sendMessage(new ChatMessage(message, 2, null));
                 } else {
                     // Send an empty message to the server
