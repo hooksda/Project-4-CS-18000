@@ -127,6 +127,8 @@ final class ChatServer {
                         break;
                     } else if (cm.getType() == 0) {
                         broadcast(username + ": " + cm.getMessage() + "\n");
+                    } else if (cm.getType() == 2) {
+                        sOutput.writeObject(listUsers());
                     } else if (cm.getType() == 3) {
                         directMessage(cm.getMessage(), cm.getRecipient());
                     }
