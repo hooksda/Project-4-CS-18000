@@ -121,9 +121,11 @@ final class ChatServer {
 
                 // Read the username sent to you by client
                 try {
+                    String chatTime = sdf.format(System.currentTimeMillis()) + " ";
                     cm = (ChatMessage) sInput.readObject();
                     if (cm.getType() == 1) {
-                        sOutput.writeObject(cm.getMessage());
+                        System.out.println(chatTime + username + " disconnected with a LOGOUT message");
+                        remove(id);
                         break;
                     } else if (cm.getType() == 0) {
                         broadcast(username + ": " + cm.getMessage() + "\n");
@@ -143,12 +145,14 @@ final class ChatServer {
         private void directMessage(String message, String username) {
             String[] to = cm.getMessage().split(" ");
             ChatFilter cf = new ChatFilter(path);
+            String chatTime = sdf.format(System.currentTimeMillis()) + " ";
             for (int i = 0; i < clients.size(); i++) {
                 if (clients.get(i).username.equals(username)) {
-                    System.out.println(this.username + " -> " + username + ": " + cf.filter(message));
+                    System.out.println(chatTime + this.username + " -> " + username + ": " + cf.filter(message));
                     try {
                         cf = new ChatFilter(path);
-                        clients.get(i).writeMessage(this.username + " -> " + username + ": " + cf.filter(message));
+                        clients.get(i).writeMessage(chatTime + this.username + " -> " + username + ": " +
+                                cf.filter(message));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
