@@ -20,20 +20,18 @@ public class ChatFilter {
     }
 
     public String filter(String msg) {
-        String filteredMessage = msg;
-        String cases;
-        String filter = "";
-        for (int i = 0; i < badWords.size(); i++) {
-            filter += "*";
-        }
-        for (int i = 0; i < badWords.size(); i++) {
-            cases = badWords.get(i);
-            if (filteredMessage.charAt(i) == cases.charAt(i)) {
-                filteredMessage = cases.replaceAll("(?i)" + cases, filter);
-            } else {
+        ArrayList<String> aster = new ArrayList<>();
+        for (int j = 0; j < badWords.size(); j++) {
+            String filter = "";
+            for (int i = 0; i < badWords.get(j).length(); i++) {
 
+                filter += "*";
             }
+            aster.add(filter);
         }
-        return filteredMessage;
+        for (int i = 0; i < badWords.size(); i++) {
+            msg = msg.replaceAll("(?i)" + badWords.get(i), aster.get(i));
+        }
+        return msg;
     }
 }
