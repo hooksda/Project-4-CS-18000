@@ -128,6 +128,7 @@ final class ChatServer {
                         remove(id);
                         break;
                     } else if (cm.getType() == 0) {
+                        System.out.println(chatTime + username + ": " + cm.getMessage());
                         broadcast(username + ": " + cm.getMessage() + "\n");
                     } else if (cm.getType() == 2) {
                         sOutput.writeObject(listUsers());
@@ -146,13 +147,19 @@ final class ChatServer {
             String[] to = cm.getMessage().split(" ");
             ChatFilter cf = new ChatFilter(path);
             String chatTime = sdf.format(System.currentTimeMillis()) + " ";
+            try {
+                sOutput.writeObject(chatTime + this.username + " -> " + username + ": " +
+                        cf.filter(message + "\n"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             for (int i = 0; i < clients.size(); i++) {
                 if (clients.get(i).username.equals(username)) {
                     System.out.println(chatTime + this.username + " -> " + username + ": " + cf.filter(message));
                     try {
                         cf = new ChatFilter(path);
                         clients.get(i).writeMessage(chatTime + this.username + " -> " + username + ": " +
-                                cf.filter(message));
+                                cf.filter(message + "\n"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -180,8 +187,6 @@ final class ChatServer {
                     clients.get(i).writeMessage(fullMessage);
 
                 }
-
-                System.out.println(fullMessage);
 
             } catch (IOException e) {
                 e.printStackTrace();
